@@ -1,0 +1,15 @@
+{
+    "Config":{
+        "db": {
+        "user": "",
+        "port": "",
+        "password": "",
+        "host": "",
+        "dbname": ""
+      }
+    },
+    "key": {  
+      "apikey": ""
+    }
+  }
+  
