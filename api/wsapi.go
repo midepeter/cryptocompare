@@ -17,7 +17,6 @@ func Open() {
 	fmt.Println("Websocket connection called")
 	var h = http.Header{}
 	api := config.GetConfig()
-	fmt.Println("Apikey " + api.Key.Apikey)
 	url := "wss://streamer.cryptocompare.com/v2/service/price"
 	h.Add("Authorization", fmt.Sprintln("Apikey "+api.Key.Apikey))
 
