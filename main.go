@@ -2,12 +2,15 @@ package main
 
 import (
 	"context"
+	"fmt"
 	"net/http"
 	"os"
 	"os/signal"
 	"time"
 
 	"midepeter/devtest/api"
+	"midepeter/devtest/config"
+	"midepeter/devtest/db"
 
 	"github.com/gorilla/mux"
 	log "github.com/sirupsen/logrus"
@@ -17,6 +20,12 @@ func main() {
 	l := log.New()
 	l.Println("serving HTTP...")
 	sm := mux.NewRouter()
+
+	_, err := db.NewDB(config.GetConfig())
+	if err != nil {
+		fmt.Println("Unable to initalizeto the database")
+		panic(err)
+	}
 
 	router := sm.Methods(http.MethodGet).Subrouter()
 	router.HandleFunc("/price", api.Pricehandler)

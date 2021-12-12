@@ -9,14 +9,15 @@ import (
 
 	"midepeter/devtest/config"
 
-	"github.com/Masterminds/squirrel"
+	sq "github.com/Masterminds/squirrel"
 	"github.com/go-sql-driver/mysql"
-	_ "github.com/go-sql-driver/mysql"
+
+	//_ "github.com/go-sql-driver/mysql"
 	"github.com/jmoiron/sqlx"
 	migrate "github.com/rubenv/sql-migrate"
 )
 
-const migrationsDir = "./migrations"
+const migrationsDir = "./db/migrations"
 
 type DB struct {
 	config config.Config
@@ -37,7 +38,7 @@ func NewDB(cfg config.Config) (*DB, error) {
 
 func (m *DB) tryOpenConnection() {
 	for {
-		err := m.openConnection()
+		err := m.OpenConnection()
 		if err != nil {
 			fmt.Printf("cant open connection to mysql: %s", err.Error())
 		} else {
@@ -48,15 +49,17 @@ func (m *DB) tryOpenConnection() {
 	}
 }
 
-func (m *DB) openConnection() error {
+func (m *DB) OpenConnection() error {
+	dbcfg := config.GetConfig()
 	source := fmt.Sprintf(
 		"%s:%s@tcp(%s:%s)/%s?charset=utf8mb4&multiStatements=true&parseTime=true",
-		m.config.Db.User,
-		m.config.Db.Password,
-		m.config.Db.Host,
-		m.config.Db.Port,
-		m.config.Db.Name,
+		dbcfg.Db.User,
+		dbcfg.Db.Password,
+		dbcfg.Db.Host,
+		dbcfg.Db.Port,
+		dbcfg.Db.Name,
 	)
+	fmt.Println(source)
 	var err error
 	m.db, err = sqlx.Connect("mysql", source)
 	if err != nil {
@@ -88,11 +91,12 @@ func (m DB) migrate() error {
 	return err
 }
 
-func (m DB) insert(sb squirrel.InsertBuilder) (id uint64, err error) {
-	sql, args, err := sb.ToSql()
+func (m DB) Insert(table string, columns string, values []string) (id uint64, err error) {
+	sql, args, err := sq.Insert(table).Columns(columns).Values(values).ToSql()
 	if err != nil {
 		return id, err
 	}
+	fmt.Println(sql)
 	result, err := m.db.Exec(sql, args...)
 	if err != nil {
 		mErr, ok := err.(*mysql.MySQLError)

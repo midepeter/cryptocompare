@@ -31,6 +31,5 @@ func Pricehandler(w http.ResponseWriter, r *http.Request) {
 		fmt.Println("unable to unmarshal data")
 		panic(err)
 	}
-
 	fmt.Print(data)
 }

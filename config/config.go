@@ -2,7 +2,6 @@ package config
 
 import (
 	"encoding/json"
-	"fmt"
 	"io/ioutil"
 	"log"
 	"path/filepath"
@@ -17,7 +16,7 @@ type Config struct {
 type DB struct {
 	Password string `json:"password"`
 	User     string `json:"user"`
-	Name     string `json:"name"`
+	Name     string `json:"dbname"`
 	Port     string `json:"port"`
 	Host     string `json:"host"`
 }
@@ -37,6 +36,5 @@ func GetConfig() Config {
 	if err != nil {
 		log.Fatalln("Failed unmarshal config ", err)
 	}
-	fmt.Println(config)
 	return config
 }
