@@ -54,7 +54,6 @@ func main() {
 
 	l.Println("gracefully shutdown", sig)
 
-	tc, cancel := context.WithTimeout(context.Background(), 30*time.Second)
+	_, cancel := context.WithTimeout(context.Background(), 30*time.Second)
 	defer cancel()
-	s.Shutdown(tc)
 }
