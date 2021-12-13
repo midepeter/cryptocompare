@@ -13,12 +13,13 @@ import (
 var fsyms = []string{"BTC", "XRP", "ETH", "BCH", "EOS", "LTC", "XMR", "DASH"}
 var tsyms = []string{"USD", "EUR", "GBP", "JPY", "RUR"}
 
-//price handler over http
 func Pricehandler(w http.ResponseWriter, r *http.Request) {
+	fmt.Println(fsyms[0])
 	apistr := config.GetConfig()
 	var data db.Result
 	r.Header.Add("Authorization", fmt.Sprintln("Apikey "+apistr.Key.Apikey))
-	resp, err := http.Get("https://min-api.cryptocompare.com/data/pricemultifull?+fsyms=" + fsyms[0] + "&tsyms=" + tsyms[0])
+	str := fmt.Sprintf("https://min-api.cryptocompare.com/data/pricemultifull?fsyms=%v&tsyms=%v", fsyms[0], tsyms[0])
+	resp, err := http.Get(str)
 	if err != nil {
 		fmt.Println(err)
 	}
@@ -31,5 +32,5 @@ func Pricehandler(w http.ResponseWriter, r *http.Request) {
 		fmt.Println("unable to unmarshal data")
 		panic(err)
 	}
-	fmt.Print(data)
+	fmt.Fprintln(w, "", data)
 }

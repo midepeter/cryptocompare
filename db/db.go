@@ -9,7 +9,6 @@ import (
 
 	"midepeter/devtest/config"
 
-	sq "github.com/Masterminds/squirrel"
 	"github.com/go-sql-driver/mysql"
 
 	//_ "github.com/go-sql-driver/mysql"
@@ -91,12 +90,7 @@ func (m DB) migrate() error {
 	return err
 }
 
-func (m DB) Insert(table string, columns string, values []string) (id uint64, err error) {
-	sql, args, err := sq.Insert(table).Columns(columns).Values(values).ToSql()
-	if err != nil {
-		return id, err
-	}
-	fmt.Println(sql)
+func (m DB) Insert(sql string, args ...interface{}) (id uint64, err error) {
 	result, err := m.db.Exec(sql, args...)
 	if err != nil {
 		mErr, ok := err.(*mysql.MySQLError)

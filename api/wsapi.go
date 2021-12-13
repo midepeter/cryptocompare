@@ -17,7 +17,7 @@ func Open() {
 	fmt.Println("Websocket connection called")
 	var h = http.Header{}
 	api := config.GetConfig()
-	url := "wss://streamer.cryptocompare.com/v2/service/price"
+	url := "wss://streamer.cryptocompare.com/v2/price"
 	h.Add("Authorization", fmt.Sprintln("Apikey "+api.Key.Apikey))
 
 	interrupt := make(chan os.Signal, 1)
@@ -39,7 +39,7 @@ func Open() {
 				log.Println("read:", err)
 				return
 			}
-			log.Printf("recv: %s", message)
+			fmt.Fprintf(os.Stdout, "%s", message)
 		}
 	}()
 
